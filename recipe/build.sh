@@ -2,6 +2,10 @@
 
 set -e
 set -x
+
+# Remove vendored pre-generated protobuf sources so system protoc regenerates them
+find "${SRC_DIR}" -name "*.pb.h" -o -name "*.pb.cc" | xargs rm -f
+
 mkdir build
 cd build
 
@@ -17,6 +21,8 @@ cmake \
     -DPYTHON_EXECUTABLE:FILEPATH=${PREFIX}/bin/python \
     -DPYTHON_INCLUDE_DIR=$(${PYTHON} -c 'import sysconfig; print(sysconfig.get_paths()["include"])') \
     -DPYTHON_LIBRARY=${PREFIX}/lib \
+    -DPYTHON_EXECUTABLE="${PYTHON}" \
+    -DPython3_EXECUTABLE="${PYTHON}" \
     ..
 make -j ${CPU_COUNT}
 
