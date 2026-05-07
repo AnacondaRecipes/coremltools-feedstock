@@ -23,6 +23,7 @@ cmake \
     -DPYTHON_LIBRARY=${PREFIX}/lib \
     -DPYTHON_EXECUTABLE="${PYTHON}" \
     -DPython3_EXECUTABLE="${PYTHON}" \
+    -DPython_NumPy_INCLUDE_DIR=${Python_NumPy_INCLUDE_DIR} \
     ..
 make -j ${CPU_COUNT}
 
