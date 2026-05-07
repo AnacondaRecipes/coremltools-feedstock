@@ -37,8 +37,8 @@ requirements:
     - numpy
     - cmake
     - make
-    - protobuf <4
-    - libprotobuf <4
+    - protobuf <6
+    - libprotobuf <6
   host:
     - pip
     - python
