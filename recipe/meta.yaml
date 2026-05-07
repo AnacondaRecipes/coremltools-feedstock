@@ -15,7 +15,7 @@ source:
   sha256: 0582e0307dbdccdcb4936f8b3b6880bb2e815d9a416a3e76127824bd3bec5ce6
   patches:
     - patches/0001-Use-nlohmann_json-from-conda-forge.patch
-    - patches/0002-Update-CMakeLists-to-use-new-python-and-conda-forge-.patch
+    #- patches/0002-Update-CMakeLists-to-use-new-python-and-conda-forge-.patch
     - patches/0003-Avoid-building-test-code.patch
     - patches/0004-Use-strip-from-environment-variable.patch
     - patches/0005-Adjust-build-system-to-unvendor-protobuf.patch
