@@ -1,0 +1,74 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Xianglong Kong <xkong@anaconda.com>
+Date: Tue, 03 Jun 2026 00:00:00 +0000
+Subject: [PATCH] Guard getBytesWithHandler: behind SDK 12.3 compile check
+
+MLMultiArray.getBytesWithHandler: was introduced in macOS 12.3.
+PBP osx-arm64 CI uses MacOSX12.1.sdk so the selector is not declared.
+
+Use __MAC_OS_X_VERSION_MAX_ALLOWED to select between the new API
+(SDK >= 12.3) and the deprecated-but-available dataPointer fallback
+(SDK < 12.3).
+---
+ coremlpython/CoreMLPythonUtils.mm | 46 +++++++++++++++++++++++-------
+ 1 file changed, 36 insertions(+), 10 deletions(-)
+
+--- a/coremlpython/CoreMLPythonUtils.mm
++++ b/coremlpython/CoreMLPythonUtils.mm
+@@ -460,14 +460,38 @@
+         stride *= sizeOfArrayElement(type);
+     }
+ 
+-    __block py::object array;
+-    [value getBytesWithHandler:^(const void *bytes, NSInteger size) {
+-        switch (type) {
++    py::object array;
++#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 120300
++    {
++        __block py::object blockArray;
++        [value getBytesWithHandler:^(const void *bytes, NSInteger size) {
++            switch (type) {
+ #if BUILT_WITH_MACOS26_SDK
+-            case MLMultiArrayDataTypeInt8:
+-                array = py::array(shape, strides, reinterpret_cast<const int8_t *>(bytes));
+-                break;
++                case MLMultiArrayDataTypeInt8:
++                    blockArray = py::array(shape, strides, reinterpret_cast<const int8_t *>(bytes));
++                    break;
+ #endif
++                case MLMultiArrayDataTypeInt32:
++                    blockArray = py::array(shape, strides, reinterpret_cast<const int32_t *>(bytes));
++                    break;
++                case MLMultiArrayDataTypeFloat32:
++                    blockArray = py::array(shape, strides, reinterpret_cast<const float *>(bytes));
++                    break;
++                case MLMultiArrayDataTypeFloat64:
++                    blockArray = py::array(shape, strides, reinterpret_cast<const double *>(bytes));
++                    break;
++                default:
++                    assert(false);
++                    blockArray = py::object();
++            }
++        }];
++        array = blockArray;
++    }
++#else
++    // Fallback for macOS SDK < 12.3: use deprecated-but-available dataPointer
++    {
++        const void* bytes = value.dataPointer;
++        switch (type) {
+             case MLMultiArrayDataTypeInt32:
+                 array = py::array(shape, strides, reinterpret_cast<const int32_t *>(bytes));
+                 break;
+@@ -479,9 +503,9 @@
+                 break;
+             default:
+                 assert(false);
+-                array = py::object();
+         }
+-    }];
++    }
++#endif
+ 
+     return array;
+ }
