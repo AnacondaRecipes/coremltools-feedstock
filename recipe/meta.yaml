@@ -48,9 +48,10 @@ requirements:
     - libprotobuf
     - libprotobuf-python-headers
     - libabseil
+    - libuuid  # [linux]
   run:
     - python
-    - numpy >=1.21
+    - numpy >=1.14.5
     - protobuf >=3.1.0
     - sympy
     - tqdm
@@ -59,7 +60,6 @@ requirements:
     - cattrs
     - pyaml
     - libuuid  # [linux]
-    - scipy
   run_constrained:
     - pytorch >=1.4
 
@@ -87,3 +87,10 @@ about:
     Core ML optimizes on-device performance by leveraging the CPU, GPU, and Neural Engine while minimizing its memory footprint and power consumption.
   doc_url: https://coremltools.readme.io/docs
   dev_url: https://github.com/apple/coremltools
+
+extra:
+  recipe-maintainers:
+    - 1duo
+    - aseemw
+    - seibert
+    - TomAugspurger
