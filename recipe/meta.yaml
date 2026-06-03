@@ -1,8 +1,8 @@
 {% set name = "coremltools" %}
-{% set version = "4.1" %}
+{% set version = "9.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -10,69 +10,80 @@ source:
   #   - LICENSE.txt
   #   - CMakeLists.txt
   # so we use GitHub releases.
-  url: https://github.com/apple/{{ name }}/archive/{{ version }}.tar.gz
-  sha256: fdbc1e96bdeda0b23222864cb802053c67d8165a9e000e873d9b4028815ce61b
+  url: https://github.com/apple/coremltools/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 0582e0307dbdccdcb4936f8b3b6880bb2e815d9a416a3e76127824bd3bec5ce6
+  patches:
+    - patches/0001-Use-nlohmann_json-from-conda-forge.patch
+    - patches/0002-Update-CMakeLists-to-use-new-python-and-conda-forge-.patch
+    - patches/0003-Avoid-building-test-code.patch
+    - patches/0004-Use-strip-from-environment-variable.patch
+    - patches/0005-Adjust-build-system-to-unvendor-protobuf.patch
+    - patches/0006-Update-mlmodel-to-newer-absel.patch
+    - patches/0007-Use-python-for-enumgen-instead-of-cpp-for-cross-comp.patch
 
 build:
-  number: 1
-  # The upstream package does not support Windows.
+  number: 0
   skip: true  # [win]
-  missing_dso_whitelist:                                             # [osx]
-    - /System/Library/Frameworks/CoreML.framework/Versions/A/CoreML  # [osx]
 
 requirements:
   build:
-    - cmake
-    - make
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - cmake
+    - make
+    - python                                 # [build_platform != target_platform]
+    - numpy                                  # [build_platform != target_platform]
+    - protobuf                               # [build_platform != target_platform]
+    - libprotobuf                            # [build_platform != target_platform]
   host:
     - python
-    - numpy
     - pip
+    - setuptools
+    - numpy
+    - pybind11
+    - nlohmann_json
+    - zlib
+    - protobuf
+    - libprotobuf
+    - libprotobuf-python-headers
+    - libabseil
   run:
     - python
-    - {{ pin_compatible('numpy') }}
+    - numpy >=1.21
     - protobuf >=3.1.0
-    - six >=1.1.0
-    - attrs
     - sympy
-    - scipy
     - tqdm
     - packaging
+    - attrs >=21.3.0
+    - cattrs
+    - pyaml
+    - libuuid  # [linux]
+    - scipy
   run_constrained:
-    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default("10.9") }}  # [osx]
-    - pytorch >=1.4,<1.7
+    - pytorch >=1.4
 
 test:
+  requires:
+    - pip
   imports:
     - coremltools
+    - coremltools.libcoremlpython  # [osx]
   commands:
-    # TODO: change to running `coremlconverter --help`
-    # when the upstream bug is fixed.
-    - test -f ${PREFIX}/bin/coremlconverter
+    - pip check
 
 about:
   home: https://github.com/apple/coremltools
   license: BSD-3-Clause
   license_family: BSD
-  license_file: LICENSE.txt
+  license_file:
+    - LICENSE.txt
+    - NOTICE.txt
   summary: Core ML is an Apple framework to integrate machine learning models into your app. Core ML provides a unified representation for all models.
-
   description: |
     Core ML is an Apple framework to integrate machine learning models into your app.
-
     Use the coremltools Python package to convert models from third-party training libraries such as TensorFlow and PyTorch to the Core ML format. You can then use Core ML to integrate the models into your app.
-
-    Core ML provides a unified representation for all models. Your app uses Core ML APIs and user data to make predictions, and to fine-tune models, all on the user’s device. Running a model strictly on the user’s device removes any need for a network connection, which helps keep the user’s data private and your app responsive.
-
+    Core ML provides a unified representation for all models. Your app uses Core ML APIs and user data to make predictions, and to fine-tune models, all on the user's device. Running a model strictly on the user's device removes any need for a network connection, which helps keep the user's data private and your app responsive.
     Core ML optimizes on-device performance by leveraging the CPU, GPU, and Neural Engine while minimizing its memory footprint and power consumption.
   doc_url: https://coremltools.readme.io/docs
   dev_url: https://github.com/apple/coremltools
-
-extra:
-  recipe-maintainers:
-    - 1duo
-    - aseemw
-    - seibert
-    - TomAugspurger
