@@ -49,7 +49,7 @@ requirements:
     - libprotobuf {{ libprotobuf }}
     - libprotobuf-python-headers {{ libprotobuf }}
     - libabseil
-    - libuuid  # [linux]
+    - libuuid {{ libuuid }}  # [linux]
   run:
     - python
     - numpy >=1.14.5
