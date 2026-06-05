@@ -41,7 +41,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - numpy
+    - numpy {{ numpy }}
     - pybind11
     - nlohmann_json
     - zlib
