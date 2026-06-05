@@ -48,7 +48,7 @@ requirements:
     - protobuf  {{ libprotobuf }}
     - libprotobuf {{ libprotobuf }}
     - libprotobuf-python-headers {{ libprotobuf }}
-    - libabseil
+    - libabseil {{ libabseil }}
     - libuuid {{ libuuid }}  # [linux]
   run:
     - python
