@@ -45,7 +45,7 @@ requirements:
     - pybind11 3.0.4
     - nlohmann_json 3.12.0
     - zlib {{ zlib }}
-    - protobuf
+    - protobuf  {{ libprotobuf }}
     - libprotobuf {{ libprotobuf }}
     - libprotobuf-python-headers
     - libabseil
