@@ -9,11 +9,7 @@ export PREFIX=${PREFIX:-${CONDA_PREFIX}}
 # (kmeans1d is kept vendored since it is not available on pkgs/main)
 rm -rf deps/protobuf
 
-if [[ ${CONDA_BUILD_CROSS_COMPILATION:-0} == "1" ]]; then
-    Protobuf_PROTOC_EXECUTABLE=${BUILD_PREFIX}/bin/protoc
-else
-    Protobuf_PROTOC_EXECUTABLE=${PREFIX}/bin/protoc
-fi
+Protobuf_PROTOC_EXECUTABLE=${PREFIX}/bin/protoc
 
 COMMON_CMAKE_ARGS=(
     ${CMAKE_ARGS}
