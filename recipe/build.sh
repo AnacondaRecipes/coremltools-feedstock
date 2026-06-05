@@ -2,22 +2,33 @@
 
 set -e
 set -x
-mkdir build
-cd build
 
-if [[ $(uname) = Darwin ]]; then
-  # as we don't provide SDKs at a default location on OSX, we need to specify used
-  # SDK location explicit and add clang option for it
-  export CMAKE_OSX_SYSROOT="${CONDA_BUILD_SYSROOT}"
-  export CMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} -isysroot ${CONDA_BUILD_SYSROOT} -Wno-unknown-warning-option"
-fi
+export PREFIX=${PREFIX:-${CONDA_PREFIX}}
 
-cmake \
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} \
-    -DPYTHON_EXECUTABLE:FILEPATH=${PREFIX}/bin/python \
-    -DPYTHON_INCLUDE_DIR=$(${PYTHON} -c 'import sysconfig; print(sysconfig.get_paths()["include"])') \
-    -DPYTHON_LIBRARY=${PREFIX}/lib \
-    ..
-make -j ${CPU_COUNT}
+# Remove vendored protobuf so the system library from libprotobuf is used instead
+# (kmeans1d is kept vendored since it is not available on pkgs/main)
+rm -rf deps/protobuf
 
-${PYTHON} -m pip install --no-deps --ignore-installed ../
+Protobuf_PROTOC_EXECUTABLE=${PREFIX}/bin/protoc
+
+COMMON_CMAKE_ARGS=(
+    ${CMAKE_ARGS}
+    -DOVERWRITE_PB_SOURCE=ON
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    -DProtobuf_PROTOC_EXECUTABLE="${Protobuf_PROTOC_EXECUTABLE}"
+    -DPython_FIND_STRATEGY:STRING=LOCATION
+    -DPython_ROOT_DIR:FILEPATH="${PREFIX}"
+)
+
+rm -rf mlmodel/build
+mkdir -p mlmodel/build/format
+
+mkdir -p build
+pushd build
+cmake "${COMMON_CMAKE_ARGS[@]}" ..
+# Generate protobuf sources first, then build the rest
+cmake --build . --target protosrc
+make -j "${CPU_COUNT}"
+popd
+
+${PYTHON:-python} -m pip install --no-deps --ignore-installed ./
