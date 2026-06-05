@@ -33,7 +33,6 @@ requirements:
     - {{ compiler('cxx') }}
     - cmake
     - make
-    - libprotobuf                            # [build_platform != target_platform]
   host:
     - python
     - pip
