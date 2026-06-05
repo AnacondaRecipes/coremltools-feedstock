@@ -34,7 +34,6 @@ requirements:
     - cmake
     - make
     - numpy                                  # [build_platform != target_platform]
-    - protobuf                               # [build_platform != target_platform]
     - libprotobuf                            # [build_platform != target_platform]
   host:
     - python
