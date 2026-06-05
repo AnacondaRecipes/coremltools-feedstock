@@ -42,7 +42,7 @@ requirements:
     - pip
     - setuptools
     - numpy {{ numpy }}
-    - pybind11
+    - pybind11 3.0.4
     - nlohmann_json
     - zlib
     - protobuf
