@@ -43,7 +43,7 @@ requirements:
     - setuptools
     - numpy {{ numpy }}
     - pybind11 3.0.4
-    - nlohmann_json
+    - nlohmann_json 3.12.0
     - zlib
     - protobuf
     - libprotobuf
