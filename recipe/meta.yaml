@@ -47,7 +47,7 @@ requirements:
     - zlib {{ zlib }}
     - protobuf  {{ libprotobuf }}
     - libprotobuf {{ libprotobuf }}
-    - libprotobuf-python-headers
+    - libprotobuf-python-headers {{ libprotobuf }}
     - libabseil
     - libuuid  # [linux]
   run:
