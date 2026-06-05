@@ -33,7 +33,6 @@ requirements:
     - {{ compiler('cxx') }}
     - cmake
     - make
-    - python                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - protobuf                               # [build_platform != target_platform]
     - libprotobuf                            # [build_platform != target_platform]
