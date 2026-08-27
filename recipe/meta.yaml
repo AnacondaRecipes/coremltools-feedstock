@@ -23,7 +23,7 @@ source:
     - patches/0008-Guard-getBytesWithHandler-behind-SDK-12.3-compile-ch.patch  # [osx]
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
 
 requirements:
@@ -41,15 +41,15 @@ requirements:
     - pybind11 3.0.4
     - nlohmann_json 3.12.0
     - zlib {{ zlib }}
-    - protobuf  {{ libprotobuf }}
-    - libprotobuf {{ libprotobuf }}
-    - libprotobuf-python-headers {{ libprotobuf }}
-    - libabseil {{ libabseil }}
+    - protobuf 7.35.1
+    - libprotobuf 7.35.1
+    - libprotobuf-python-headers 7.35.1
+    - libabseil 20260526.0
     - libuuid {{ libuuid }}  # [linux]
   run:
     - python
     - numpy >=1.14.5
-    - protobuf >=3.1.0
+    - protobuf 7.35.1
     - sympy
     - tqdm
     - packaging
