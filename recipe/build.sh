@@ -31,4 +31,4 @@ cmake --build . --target protosrc
 make -j "${CPU_COUNT}"
 popd
 
-${PYTHON:-python} -m pip install --no-deps --ignore-installed ./
+${PYTHON:-python} -m pip install --no-deps --no-build-isolation --ignore-installed ./
