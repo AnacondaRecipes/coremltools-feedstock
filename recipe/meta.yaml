@@ -21,9 +21,10 @@ source:
     - patches/0006-Update-mlmodel-to-newer-absel.patch
     - patches/0007-Use-python-for-enumgen-instead-of-cpp-for-cross-comp.patch
     - patches/0008-Guard-getBytesWithHandler-behind-SDK-12.3-compile-ch.patch  # [osx]
+    - patches/0009-Only-require-Python-Development.Module.patch
 
 build:
-  number: 1
+  number: 2
   skip: true  # [win]
 
 requirements:
@@ -39,6 +40,7 @@ requirements:
     - setuptools
     - numpy {{ numpy }}
     - pybind11 3.0.4
+    - pybind11-abi
     - nlohmann_json 3.12.0
     - zlib {{ zlib }}
     - protobuf 7.35.1
