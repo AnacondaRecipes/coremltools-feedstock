@@ -47,7 +47,12 @@ requirements:
     - libprotobuf 7.35.1
     - libprotobuf-python-headers 7.35.1
     - libabseil 20260526.0
-    - libuuid {{ libuuid }}  # [linux]
+    # Pin libuuid 1 instead of the aggregate CBC "libuuid" variable: that variable is
+    # now 2 (aggregate #708, 2026-11-13) but every python build in pkgs/main still
+    # requires libuuid >=1.41.5,<2.0a0, so libuuid 2 cannot co-install with python.
+    # libuuid 1.41.5 run_exports >=1.41.5,<2.0a0, which bounds the run requirement.
+    # Revisit when python is rebuilt against libuuid 2.
+    - libuuid 1  # [linux]
   run:
     - python
     - numpy >=1.14.5
